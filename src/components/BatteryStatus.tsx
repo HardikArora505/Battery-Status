@@ -29,7 +29,7 @@ const BatteryStatus = () => {
             // Charging Time
             const chargingTimeSeconds = batteryStatus.chargingTime;
             if (chargingTimeSeconds === Infinity) {
-                setChargingTime('Unplugged');
+                setChargingTime('Unknown');
             } else {
                 const chargingHours = Math.floor(chargingTimeSeconds / 3600);
                 const chargingMinutes = Math.floor((chargingTimeSeconds % 3600) / 60);
@@ -51,7 +51,7 @@ const BatteryStatus = () => {
             // Discharging Time
             const dischargingTimeSeconds = batteryStatus.dischargingTime;
             if (dischargingTimeSeconds === Infinity) {
-                setDisChargingTime('Plugged in');
+                setDisChargingTime('Unknown');
             } else {
                 const dischargingHours = Math.floor(dischargingTimeSeconds / 3600);
                 const dischargingMinutes = Math.floor((dischargingTimeSeconds % 3600) / 60);
@@ -91,12 +91,12 @@ const BatteryStatus = () => {
                     <div
                         className={`${batteryColor} absolute top-0 left-0 h-full transition-all duration-300 ease-in-out`}
                         style={{
-                            width: `${Math.floor(batteryStatus.level)}%`,
+                            width: `${batteryStatus.level}%`,
                         }}
                     />
                     <div className='absolute inset-0 flex items-center justify-center text-white font-semibold '>
                         {batteryStatus.charging && <PowerIcon />}
-                        <span className='text-6xl'>{batteryStatus.level}</span>
+                        <span className='text-6xl'>{Math.floor(batteryStatus.level)}</span>
                     </div>
                 </div>
                 <div className='w-6 h-20 bg-white rounded-e-md'></div>
