@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage":"https://HardikArora505.github.io/Battery-Status",
+  "homepage":" https://hardikarora505.github.io/Battery-Status/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
