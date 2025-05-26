@@ -29,7 +29,10 @@ const BatteryStatus = () => {
             // Charging Time
             const chargingTimeSeconds = batteryStatus.chargingTime;
             if (chargingTimeSeconds === Infinity) {
-                setChargingTime('Unknown');
+                if( !batteryStatus.charging) {
+                    setChargingTime('Not Charging');
+                } 
+                else setChargingTime('Unknown');
             } else {
                 const chargingHours = Math.floor(chargingTimeSeconds / 3600);
                 const chargingMinutes = Math.floor((chargingTimeSeconds % 3600) / 60);
@@ -51,7 +54,10 @@ const BatteryStatus = () => {
             // Discharging Time
             const dischargingTimeSeconds = batteryStatus.dischargingTime;
             if (dischargingTimeSeconds === Infinity) {
-                setDisChargingTime('Unknown');
+                if( batteryStatus.charging) {
+                    setDisChargingTime('Charging');
+                } 
+                else setDisChargingTime('Unknown');
             } else {
                 const dischargingHours = Math.floor(dischargingTimeSeconds / 3600);
                 const dischargingMinutes = Math.floor((dischargingTimeSeconds % 3600) / 60);
@@ -85,11 +91,11 @@ const BatteryStatus = () => {
     }
     return (
         <div className=''>
-            <div className='flex items-center justify-start'>
+            <div className='flex items-center justify-start gap-2 '>
 
                 <div className='w-80 h-40 rounded-3xl border-8 border-white relative overflow-hidden bg-black '>
                     <div
-                        className={`${batteryColor} absolute top-0 left-0 h-full transition-all duration-300 ease-in-out`}
+                        className={`${batteryColor} rounded-2xl border-8 border-black absolute top-0 left-0 h-full transition-all duration-300 ease-in-out`}
                         style={{
                             width: `${batteryStatus.level}%`,
                         }}
@@ -99,7 +105,7 @@ const BatteryStatus = () => {
                         <span className='text-6xl'>{Math.floor(batteryStatus.level)}</span>
                     </div>
                 </div>
-                <div className='w-6 h-20 bg-white rounded-e-md'></div>
+                <div className='w-5 h-20 bg-white rounded-e-md'></div>
             </div >
             <div className='mt-4 font-semibold'>
                 <p>Battery Level: {Math.floor(batteryStatus.level)}</p>
