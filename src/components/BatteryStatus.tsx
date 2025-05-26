@@ -91,7 +91,7 @@ const BatteryStatus = () => {
                     <div
                         className={`${batteryColor} absolute top-0 left-0 h-full transition-all duration-300 ease-in-out`}
                         style={{
-                            width: `${batteryStatus.level}%`,
+                            width: `${Math.floor(batteryStatus.level)}%`,
                         }}
                     />
                     <div className='absolute inset-0 flex items-center justify-center text-white font-semibold '>
@@ -102,7 +102,7 @@ const BatteryStatus = () => {
                 <div className='w-6 h-20 bg-white rounded-e-md'></div>
             </div >
             <div className='mt-4 font-semibold'>
-                <p>Battery Level: {batteryStatus.level}</p>
+                <p>Battery Level: {Math.floor(batteryStatus.level)}</p>
                 <p>Charging: {batteryStatus.charging ? "Yes" : "No"}</p>
                 <p>Charging Time: {chargingTime}</p>
                 <p>Discharging Time: {disChargingTime}</p>
