@@ -1,27 +1,38 @@
 import { useEffect, useState } from 'react';
 import UseBatteryStatus from '../hooks/UseBatteryStatus'
-const PowerIcon = () => (
+
+const PowerIcon = ({ isDark }: { isDark: boolean }) => (
     <svg
         width="50"
         height="50"
-        fill="#ffffff"
+        fill={isDark ? "#ffffff" : "#222222"}
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
-        stroke="#ffffff"
+        stroke={isDark ? "#ffffff" : "#222222"}
     >
-        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+        <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
         <g id="SVGRepo_iconCarrier">
             <path d="M12,10h7L8,22l3-9H5L13,2Z"></path>
         </g>
     </svg>
 );
-
 const BatteryStatus = () => {
     const { batteryStatus, error } = UseBatteryStatus();
     const [batteryColor, setBatteryColor] = useState<string>("bg-green-500");
     const [chargingTime, setChargingTime] = useState<string>("");
     const [disChargingTime, setDisChargingTime] = useState<string>("");
+    const [isDark, setIsDark] = useState<boolean>(false);
+
+    // Detect theme
+    useEffect(() => {
+        const match = window.matchMedia('(prefers-color-scheme: dark)');
+        setIsDark(match.matches);
+        const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+        match.addEventListener('change', handler);
+        return () => match.removeEventListener('change', handler);
+    }, []);
+
     useEffect(() => {
         if (batteryStatus) {
             getBatteryStatusColor(batteryStatus.level, batteryStatus.charging);
@@ -29,9 +40,9 @@ const BatteryStatus = () => {
             // Charging Time
             const chargingTimeSeconds = batteryStatus.chargingTime;
             if (chargingTimeSeconds === Infinity) {
-                if( !batteryStatus.charging) {
+                if (!batteryStatus.charging) {
                     setChargingTime('Not Charging');
-                } 
+                }
                 else setChargingTime('Unknown');
             } else {
                 const chargingHours = Math.floor(chargingTimeSeconds / 3600);
@@ -54,9 +65,9 @@ const BatteryStatus = () => {
             // Discharging Time
             const dischargingTimeSeconds = batteryStatus.dischargingTime;
             if (dischargingTimeSeconds === Infinity) {
-                if( batteryStatus.charging) {
+                if (batteryStatus.charging) {
                     setDisChargingTime('Charging');
-                } 
+                }
                 else setDisChargingTime('Unknown');
             } else {
                 const dischargingHours = Math.floor(dischargingTimeSeconds / 3600);
@@ -77,7 +88,8 @@ const BatteryStatus = () => {
 
             }
         }
-    }, [batteryStatus])
+    }, [batteryStatus]);
+
     if (error) {
         return <div>{error}</div>
     }
@@ -89,23 +101,40 @@ const BatteryStatus = () => {
         else if (level > 20) setBatteryColor("bg-green-500");
         else setBatteryColor("bg-red-500");
     }
-    return (
-        <div className=''>
-            <div className='flex items-center justify-start gap-2 '>
 
-                <div className='w-80 h-40 rounded-3xl border-8 border-white relative overflow-hidden bg-black '>
+    // Theme-based styles
+    const batteryContainerClass = isDark
+        ? 'border-white bg-black'
+        : 'border-gray-800 bg-gray-100';
+
+    const batteryInnerBorder = isDark
+        ? 'border-black'
+        : 'border-white';
+
+    const batteryTextClass = isDark
+        ? 'text-white'
+        : 'text-gray-900';
+
+    const batteryCapClass = isDark
+        ? 'bg-white'
+        : 'bg-gray-800';
+
+    return (
+        <div>
+            <div className='flex items-center justify-start gap-2 '>
+                <div className={`w-80 h-40 rounded-3xl border-8 relative overflow-hidden ${batteryContainerClass}`}>
                     <div
-                        className={`${batteryColor} rounded-2xl border-8 border-black absolute top-0 left-0 h-full transition-all duration-300 ease-in-out`}
+                        className={`${batteryColor} rounded-2xl absolute top-0 left-0 h-full transition-all duration-300 ease-in-out ${batteryInnerBorder} border-8`}
                         style={{
                             width: `${batteryStatus.level}%`,
                         }}
                     />
-                    <div className='absolute inset-0 flex items-center justify-center text-white font-semibold '>
-                        {batteryStatus.charging && <PowerIcon />}
+                    <div className={`absolute inset-0 flex items-center justify-center font-semibold ${batteryTextClass}`}>
+                        {batteryStatus.charging && <PowerIcon isDark={isDark} />}
                         <span className='text-6xl'>{Math.floor(batteryStatus.level)}</span>
                     </div>
                 </div>
-                <div className='w-5 h-20 bg-white rounded-e-md'></div>
+                <div className={`w-5 h-20 rounded-e-md ${batteryCapClass}`}></div>
             </div >
             <div className='mt-4 font-semibold'>
                 <p>Battery Level: {Math.floor(batteryStatus.level)}</p>
