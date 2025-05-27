@@ -105,7 +105,7 @@ const BatteryStatus = () => {
     // Theme-based styles
     const batteryContainerClass = isDark
         ? 'border-white bg-black'
-        : 'border-gray-800 bg-gray-100';
+        : 'border-gray-800 bg-white';
 
     const batteryInnerBorder = isDark
         ? 'border-black'
